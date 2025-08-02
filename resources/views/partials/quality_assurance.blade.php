@@ -23,7 +23,7 @@
       <!--=========High Quality end============-->
 
 
-         <section class="home2 bestthing-section">
+         <section class="home2 bestthing-section" style="background:url({{asset("images/solutions-bg.jpg")}}) no-repeat center top;">
          <div class="container">
             <div class="row ">
                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 bestthing-text-column">
