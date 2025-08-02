@@ -13,7 +13,7 @@ $setting = \App\Models\Setting::find(1);
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ $setting->website_title }} | {{$title ?? ""}}</title>
+    <title>{{ $setting->website_title }} :: {{$title ?? ""}}</title>
 
     <!-- Place favicon.ico in the root directory -->
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset("images/settings/$setting->website_favicon") }}">

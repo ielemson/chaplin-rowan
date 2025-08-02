@@ -144,7 +144,7 @@ class GeneralController extends Controller
             'captcha' => 'required|captcha'
         ]);
 
-        Mail::to('ielemson@gmail.com')->send(new ContactMail($request->all()));
+        Mail::to('info@chaplinrowanltd.com')->send(new ContactMail($request->all()));
 
         return response()->json(['message' => 'Thank you for contacting us!']);
     }
