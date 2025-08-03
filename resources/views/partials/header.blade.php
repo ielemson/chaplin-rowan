@@ -78,15 +78,15 @@ $setting = \App\Models\Setting::find(1);
                   <div id="main-navigation" class="collapse navbar-collapse">
                      <ul class="nav navbar-nav">
                         <li class="dropdown ">
-                           <a href="{{url("/")}}" class="active">Home</a><i class="fa fa-chevron-down active"></i>
+                           <a href="{{url("/")}}" class="{{ Request::is('/') ? 'active' : '' }}">Home</a><i class="fa fa-chevron-down active"></i>
                          
                         </li>
                         <li class="dropdown">
                            <a href="javascript:;">About Us</a><i class="fa fa-chevron-down"></i>
                            <ul class="dropdown-submenu">
-                              <li><a href="{{route("about")}}">Who We Are</a></li>
-                              <li><a href="{{route("our.mission")}}">Our Mission</a></li>
-                              <li><a href="{{route("our.vision")}}">Our Vision</a></li>
+                              <li><a class="{{ Route::is('about') ? 'active' : '' }}" href="{{route("about")}}">Who We Are</a></li>
+                              <li><a class="{{ Route::is('our.mission') ? 'active' : '' }}" href="{{route("our.mission")}}">Our Mission</a></li>
+                              <li><a class="{{ Route::is('our.vision') ? 'active' : '' }}" href="{{route("our.vision")}}">Our Vision</a></li>
                            </ul>
                         </li>
                       @if (count($services) > 0)
@@ -115,7 +115,7 @@ $setting = \App\Models\Setting::find(1);
                            <a href="https://www.chaplinrowanltd.com:2096/" target="_blank">Staff Login</a><i class="fa fa-chevron-down"></i>
                         </li>
                         
-                        <li><a href="{{route("contact")}}">contact us</a></li>
+                        <li><a class="{{ Route::is('contact') ? 'active' : '' }}" href="{{route("contact")}}">contact us</a></li>
                      </ul>
                      <a class="header-requestbtn header2-requestbtn hvr-bounce-to-right" href="{{route("contact")}}">Request A Quote</a>
                   </div>

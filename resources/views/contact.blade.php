@@ -135,8 +135,10 @@ $('#contactForm').on('submit', function (e) {
                     title: 'Validation Error',
                     html: message
                 });
+                 $('#reload').click();
             } else {
                 Swal.fire('Error', 'Something went wrong.', 'error');
+                 $('#reload').click();
             }
         },
         complete: function () {
