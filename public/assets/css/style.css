@@ -2191,14 +2191,14 @@ ul.header-info li.address{
 }
  .service-list-column .service-heading{
      width:100%;
-     float:left;
      border-left:4px solid #5ba377;
-     padding:15px 10px 15px 90px;
+     padding:15px 10px 15px 15px;
      box-shadow:0px 4px 10px #ccc;
 }
  .service-list-column .service-heading h5{
-     font-size:17px;
+     font-size:1.5rem;
      margin-bottom:8px;
+     text-align: center;
 }
  .service-list-column a:hover{
      text-decoration:none;
@@ -4089,7 +4089,7 @@ ul.category-list li i.fa {
 	background-position: center right;
 }
 .hmslider1 .slide-3{
-	background-image: url(../images/home1-images/home1-slide3.jpg);
+	/* background-image: url(../images/home1-images/home1-slide3.jpg); */
 	background-position: center right;
 }
 
@@ -9862,7 +9862,7 @@ section.experienceSec{
 	text-align:left; padding-left:10px;
 }
 #minimal-bootstrap-carousel .carousel-caption .thm-container .box .content.home1-slide3 {
-	    width: 80%;
+	width: 80%;
     float: none;
     display: inline-block;
 }

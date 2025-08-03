@@ -22,11 +22,20 @@ $setting = \App\Models\Setting::find(1);
                </div>
 
                @foreach ($services as $service)
-                   <div class="col-md-4 col-sm-4 col-xs-12 marbtm50 service-list-column">
+                   {{-- <div class="col-md-4 col-sm-4 col-xs-12 marbtm50 service-list-column">
                   <a href="{{ route("ourservice",$service->slug) }}">
                      <span class="image_hover"> <img src="{{ asset("$service->image") }}" class="img-responsive zoom_img_effect" alt="Manufacture-image"></span>
                      <div class="service-heading service-manufactureicon">
                         <h5>{{$service->title}}</h5>
+                        <a href="{{ route("ourservice",$service->slug) }}" class="read-more-link">Read More</a>
+                     </div>
+                  </a>
+               </div> --}}
+                  <div class="col-md-4 col-sm-4 col-xs-12 marbtm50 service-list-column">
+                  <a href="{{ route("ourservice",$service->slug) }}">
+                     <span class="image_hover"> <img src="{{ asset("$service->image") }}" class="img-responsive zoom_img_effect" alt="{{$service->title}}"></span>
+                     <div class="service-heading">
+                        <h5 sty>{{$service->title}}</h5>
                         <a href="{{ route("ourservice",$service->slug) }}" class="read-more-link">Read More</a>
                      </div>
                   </a>
