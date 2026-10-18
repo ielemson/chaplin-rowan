@@ -178,16 +178,15 @@ class GeneralController extends Controller
         }
 
         try {
-            $response = Http::asForm()
-                ->connectTimeout(5)
-                ->timeout(10)
-                ->post(
-                    'https://challenges.cloudflare.com/turnstile/v0/siteverify',
-                    [
-                        'secret' => $secret,
-                        'response' => $validated['cf-turnstile-response'],
-                    ]
-                );
+           $response = Http::asForm()
+    ->timeout(10)
+    ->post(
+        'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+        [
+            'secret' => $secret,
+            'response' => $validated['cf-turnstile-response'],
+        ]
+    );
         } catch (ConnectionException $exception) {
             return response()->json([
                 'message' =>
