@@ -33,5 +33,10 @@ return [
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
+'turnstile' => [
+    'site_key'   => env('TURNSTILE_SITE_KEY'),
+    'secret_key' => env('TURNSTILE_SECRET_KEY'),
+    'hostname'   => env('TURNSTILE_HOSTNAME'),
+],
 
 ];

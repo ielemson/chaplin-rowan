@@ -1,4 +1,4 @@
-<section class="pad95-100-top-bottom get_in_02">
+<section class=" get_in_02">
     <div class="container">
         <h3 class="marbtm30 text-center">GET IN TOUCH</h3>
         <p class="fnt-18 marbtm50 text-center">Have a project or inquiry? Our team is ready to provide expert support and
@@ -16,127 +16,198 @@
                                     <input name="name" type="text" class="form-input" placeholder="Full Name*"
                                         required>
                                 </div>
+
                                 <div class="col-lg-6 form-field">
                                     <input name="email" type="email" class="form-input" placeholder="Email*"
                                         required data-parsley-type="email">
                                 </div>
+
                                 <div class="col-lg-6 form-field">
                                     <input name="phone" type="text" class="form-input" placeholder="Phone*"
                                         required>
                                 </div>
+
                                 <div class="col-lg-6 form-field">
                                     <input name="subject" type="text" class="form-input" placeholder="Subject*"
                                         required>
                                 </div>
+
                                 <div class="col-lg-12 form-field">
                                     <textarea name="message" class="form-input" rows="3" placeholder="Comment*" required></textarea>
                                 </div>
 
-                                <!-- CAPTCHA -->
-                                <div class="col-md-6 form-field">
-                                    <input type="text" name="captcha" class="form-input" placeholder="Enter CAPTCHA*"
-                                        required>
-                                </div>
-                                <div class="col-md-6 form-field d-flex align-items-center">
-                                    <span id="captcha-img">{!! captcha_img() !!}</span>
-                                    <button type="button" class="btn btn-sm btn-secondary ms-2"
-                                        id="reload">↻</button>
+                                {{-- Cloudflare Turnstile --}}
+                                <div class="col-lg-12 form-field mb-3">
+                                    <div class="cf-turnstile" data-sitekey="{{ config('services.turnstile.site_key') }}"
+                                        data-action="contact" data-theme="auto"></div>
                                 </div>
 
                                 <div class="col-md-12 form-field request_btn">
-                                    {{-- <button type="submit" class="form-submit-btn" id="btnSpinner">
-                                            <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
-                                        Submit Now
-                                    </button> --}}
                                     <button type="submit" id="submitBtn" class="form-submit-btn">
-                                    <span class="spinner-border spinner-border-sm text-light me-2 d-none" role="status" aria-hidden="true"></span>
-                                    <span class="btn-text">Submit Now</span>
+                                        <span class="spinner-border spinner-border-sm text-light me-2 d-none"
+                                            role="status" aria-hidden="true"></span>
+
+                                        <span class="btn-text">Submit Now</span>
                                     </button>
                                 </div>
                             </div>
                         </form>
-
                     </div>
                 </div>
             </div>
-            <!--=========Request Left end============-->
-            <!--=========Request Right Start============-->
-            <!--=========Request Left end============-->
+
         </div>
     </div>
 </section>
 
-
-
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/parsleyjs"></script>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
     <script>
-     $('#reload').click(function () {
-    $.get('/captcha-refresh', function (data) {
-        $('#captcha-img').html(data.captcha);
-    });
-});
+        $(function() {
+            const $form = $('#contactForm');
 
-$('#contactForm').on('submit', function (e) {
-    e.preventDefault();
+            if (!$form.length) return;
 
-    if (!$(this).parsley().isValid()) return;
+            const parsley = $form.parsley();
+            const $btn = $form.find('#submitBtn');
+            const $spinner = $btn.find('.spinner-border');
+            const $text = $btn.find('.btn-text');
 
-    const $btn = $('#submitBtn');
-    const $spinner = $btn.find('.spinner-border');
-    const $text = $btn.find('.btn-text');
+            let submitting = false;
 
-    // Show spinner, hide text, and disable button
-    $btn.prop('disabled', true);
-    $spinner.removeClass('d-none');
-    $text.addClass('d-none');
+            function setLoading(loading) {
+                submitting = loading;
 
-    $.ajax({
-        url: "{{ route('contact.submit') }}",
-        method: "POST",
-        data: $(this).serialize(),
-        success: function (response) {
-            Swal.fire('Success!', response.message, 'success');
-            $('#contactForm')[0].reset();
-            $('#reload').click();
-        },
-        error: function (xhr) {
-            if (xhr.status === 422) {
-                const errors = xhr.responseJSON.errors;
-                let message = '';
+                $btn.prop('disabled', loading);
+                $spinner.toggleClass('d-none', !loading);
+                $text.toggleClass('d-none', loading);
+                $form.attr('aria-busy', loading ? 'true' : 'false');
+            }
 
-                for (let field in errors) {
-                    message += `${errors[field].join('<br>')}<br>`;
+            function resetTurnstile() {
+                if (window.turnstile) {
+                    window.turnstile.reset();
+                }
+            }
+
+            $form.on('submit', function(event) {
+                event.preventDefault();
+
+                if (submitting || !parsley.validate()) return;
+
+                const token = $form
+                    .find('[name="cf-turnstile-response"]')
+                    .val();
+
+                if (!token) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Security Verification',
+                        text: 'Please complete the security verification before submitting.'
+                    });
+
+                    return;
                 }
 
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Validation Error',
-                    html: message
-                });
-            } else {
-                Swal.fire('Error', 'Something went wrong.', 'error');
-            }
-        },
-        complete: function () {
-            $btn.prop('disabled', false);
-            $spinner.addClass('d-none');
-            $text.removeClass('d-none');
-        }
-    });
-});
+                setLoading(true);
 
+                $.ajax({
+                    url: @json(route('contact.submit')),
+                    method: 'POST',
+                    data: $form.serialize(),
+                    dataType: 'json',
+                    headers: {
+                        'Accept': 'application/json'
+                    },
+
+                    success: function(response) {
+                        $form[0].reset();
+                        parsley.reset();
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Message Sent!',
+                            text: response.message ||
+                                'Thank you for contacting us!'
+                        });
+                    },
+
+                    error: function(xhr) {
+                        const response = xhr.responseJSON || {};
+
+                        let title = 'Unable to Send';
+                        let message = response.message ||
+                            'Something went wrong. Please try again.';
+
+                        if (xhr.status === 422) {
+                            title = 'Please Check Your Details';
+
+                            const messages = Object.values(
+                                response.errors || {}
+                            ).flat();
+
+                            if (messages.length) {
+                                message = messages.join('\n');
+                            }
+                        } else if (xhr.status === 429) {
+                            title = 'Too Many Attempts';
+                            message = 'Please wait a minute before trying again.';
+                        } else if (xhr.status === 419) {
+                            title = 'Session Expired';
+                            message = 'Please refresh this page and submit again.';
+                        } else if (xhr.status === 0) {
+                            title = 'Connection Error';
+                            message = 'Please check your internet connection and try again.';
+                        } else if (xhr.status >= 500) {
+                            message = xhr.status === 503 ?
+                                (response.message ||
+                                    'The service is temporarily unavailable. Please try again later.'
+                                    ) :
+                                'Unable to send your message right now. Please try again later.';
+                        }
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: title,
+                            text: message
+                        });
+                    },
+
+                    complete: function() {
+                        setLoading(false);
+                        resetTurnstile();
+                    }
+                });
+            });
+        });
     </script>
 @endpush
 
 @push('styles')
     <style>
-        .parsley-required {
-            color: red;
+        #contactForm .parsley-errors-list {
+            margin: 6px 0 0;
+            padding: 0;
+            color: #dc3545;
+            font-size: 14px;
             font-weight: 400;
-            list-style-type: none;
+            list-style: none;
+        }
+
+        #contactForm .parsley-error {
+            border-color: #dc3545;
+        }
+
+        #submitBtn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .swal2-html-container {
+            white-space: pre-line;
         }
     </style>
 @endpush

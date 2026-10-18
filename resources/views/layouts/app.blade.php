@@ -1,5 +1,5 @@
 @php
-$setting = \App\Models\Setting::find(1);
+    $setting = \App\Models\Setting::find(1);
 @endphp
 <!DOCTYPE html>
 <html class="no-js" lang="{{ str_replace('_', '-', app()->getLocale()) }}">
@@ -13,7 +13,7 @@ $setting = \App\Models\Setting::find(1);
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ $setting->website_title }} :: {{$title ?? ""}}</title>
+    <title>{{ $setting->website_title }} :: {{ $title ?? '' }}</title>
 
     <!-- Place favicon.ico in the root directory -->
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset("images/settings/$setting->website_favicon") }}">
@@ -21,8 +21,8 @@ $setting = \App\Models\Setting::find(1);
     <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('assets/css/animate.min.css') }}">
-    <link href="{{ asset('asset/css/responsive_bootstrap_carousel.css') }}" rel="stylesheet" media="all">
-    @stack("styles")
+    <link href="{{ asset('assets/css/responsive_bootstrap_carousel.css') }}" rel="stylesheet" media="all">
+    @stack('styles')
 </head>
 
 <body class="home6">
@@ -45,7 +45,8 @@ $setting = \App\Models\Setting::find(1);
     <script src="{{ asset('assets/js/responsive_bootstrap_carousel.js') }}"></script>
     <script src="{{ asset('assets/js/custom.js') }}"></script>
     <script src="{{ asset('assets/js/slick.js') }}"></script>
-    @stack("scripts")
+
+    @stack('scripts')
 </body>
 
 </html>
