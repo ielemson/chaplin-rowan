@@ -1,90 +1,99 @@
-@extends("layouts.app",["title"=>"Contact Us"])
+@extends('layouts.app', ['title' => 'Contact Us'])
 
 @php
-$setting = \App\Models\Setting::find(1);
+    $setting = \App\Models\Setting::find(1);
 @endphp
 
-@section("home_slider")
-    @include("partials.page_bannerr",["header"=>"Contact Us"])
+@section('home_slider')
+    @include('partials.page_bannerr', ['header' => 'Contact Us'])
 @endsection
-@section("content")
-       <!--=========Contact Section Start============-->
-      <section class="pad100-top-bottom">
-         <div class="container">
+
+@section('content')
+    <section class="pad100-top-bottom">
+        <div class="container">
             <div class="row">
-               <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 contact-info-column text-center">
-                  <img src="{{asset("assets/images/contact-address-icon.png")}}" alt="address-icon">
-                  <h4>Location</h4>
-                  <p class="fnt-17">{{$setting->address}}</p>
-               </div>
-               <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12  contact-info-column text-center">
-                  <img src="{{asset("assets/images/contact-phn-icon.png")}}" alt="phone-icon">
-                  <h4>Phone</h4>
-                  <p class="fnt-17">{{$setting->phone}}</p>
-               </div>
-               <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12  contact-info-column text-center">
-                  <img src="{{asset("assets/images/contact-msg-icon.png")}}" alt="message-icon">
-                  <h4>Email</h4>
-                  <p class="fnt-17">{{$setting->email}}</p>
-               </div>
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 contact-info-column text-center">
+                    <img src="{{ asset('assets/images/contact-address-icon.png') }}" alt="Address">
+                    <h4>Location</h4>
+                    <p class="fnt-17">{{ optional($setting)->address }}</p>
+                </div>
+
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 contact-info-column text-center">
+                    <img src="{{ asset('assets/images/contact-phn-icon.png') }}" alt="Phone">
+                    <h4>Phone</h4>
+                    <p class="fnt-17">{{ optional($setting)->phone }}</p>
+                </div>
+
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 contact-info-column text-center">
+                    <img src="{{ asset('assets/images/contact-msg-icon.png') }}" alt="Email">
+                    <h4>Email</h4>
+                    <p class="fnt-17">{{ optional($setting)->email }}</p>
+                </div>
             </div>
-            <div class="row text-center">
-               <h3 class="mar-btm30">Leave us your info</h3>
-               <p class="fnt-18">and we will get back to you.</p>
-               <div class="contact-form">
-                   <form id="contactForm" data-parsley-validate>
+
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h3 class="mar-btm30">Leave us your info</h3>
+                    <p class="fnt-18">And we will get back to you.</p>
+                </div>
+
+                <div class="col-12">
+                    <div class="contact-form">
+                        <form id="contactPageForm" action="{{ route('contact.submit') }}" method="POST"
+                            data-parsley-validate>
                             @csrf
 
                             <div class="row contact-form request-form">
                                 <div class="col-lg-6 form-field">
                                     <input name="name" type="text" class="form-input" placeholder="Full Name*"
-                                        required>
-                                </div>
-                                <div class="col-lg-6 form-field">
-                                    <input name="email" type="email" class="form-input" placeholder="Email*"
-                                        required data-parsley-type="email">
-                                </div>
-                                <div class="col-lg-6 form-field">
-                                    <input name="phone" type="text" class="form-input" placeholder="Phone*"
-                                        required>
-                                </div>
-                                <div class="col-lg-6 form-field">
-                                    <input name="subject" type="text" class="form-input" placeholder="Subject*"
-                                        required>
-                                </div>
-                                <div class="col-lg-12 form-field">
-                                    <textarea name="message" class="form-input" rows="3" placeholder="Comment*" required></textarea>
+                                        aria-label="Full Name" autocomplete="name" maxlength="255" required>
                                 </div>
 
-                                <!-- CAPTCHA -->
-                                <div class="col-md-6 form-field">
-                                    <input type="text" name="captcha" class="form-input" placeholder="Enter CAPTCHA*"
+                                <div class="col-lg-6 form-field">
+                                    <input name="email" type="email" class="form-input" placeholder="Email*"
+                                        aria-label="Email" autocomplete="email" maxlength="255" data-parsley-type="email"
                                         required>
                                 </div>
-                                <div class="col-md-6 form-field d-flex align-items-center">
-                                    <span id="captcha-img">{!! captcha_img() !!}</span>
-                                    <button type="button" class="btn btn-sm btn-secondary ms-2"
-                                        id="reload">↻</button>
+
+                                <div class="col-lg-6 form-field">
+                                    <input name="phone" type="tel" class="form-input" placeholder="Phone*"
+                                        aria-label="Phone" autocomplete="tel" maxlength="20" required>
+                                </div>
+
+                                <div class="col-lg-6 form-field">
+                                    <input name="subject" type="text" class="form-input" placeholder="Subject*"
+                                        aria-label="Subject" maxlength="255" required>
+                                </div>
+
+                                <div class="col-lg-12 form-field">
+                                    <textarea name="message" class="form-input" rows="5" placeholder="Comment*" aria-label="Comment" maxlength="10000"
+                                        required></textarea>
+                                </div>
+
+                                <div class="col-lg-12 form-field mb-3">
+                                    <div id="contactPageTurnstile"></div>
+
+                                    <p id="contactPageVerificationMessage" class="text-danger" role="status"
+                                        aria-live="polite"></p>
                                 </div>
 
                                 <div class="col-md-12 form-field request_btn">
-                                    {{-- <button type="submit" class="form-submit-btn" id="btnSpinner">
-                                            <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
-                                        Submit Now
-                                    </button> --}}
-                                    <button type="submit" id="submitBtn" class="form-submit-btn">
-                                    <span class="spinner-border spinner-border-sm text-light me-2 d-none" role="status" aria-hidden="true"></span>
-                                    <span class="btn-text">Submit Now</span>
+                                    <button type="submit" class="form-submit-btn" data-contact-submit>
+                                        <span class="spinner-border spinner-border-sm text-light me-2 d-none" role="status"
+                                            aria-hidden="true"></span>
+
+                                        <span class="btn-text">Submit Now</span>
                                     </button>
                                 </div>
                             </div>
                         </form>
-               </div>
+                    </div>
+                </div>
             </div>
-         </div>
-      </section>
-     @include("partials.google_map")
-      <!--=========Contact Section end============-->
+        </div>
+    </section>
+
+    @include('partials.google_map')
 @endsection
 
 @push('scripts')
@@ -92,72 +101,184 @@ $setting = \App\Models\Setting::find(1);
     <script src="https://cdn.jsdelivr.net/npm/parsleyjs"></script>
 
     <script>
-     $('#reload').click(function () {
-    $.get('/captcha-refresh', function (data) {
-        $('#captcha-img').html(data.captcha);
-    });
-});
+        window.contactPageWidgetId = null;
 
-$('#contactForm').on('submit', function (e) {
-    e.preventDefault();
+        window.initContactPageTurnstile = function() {
+            window.contactPageWidgetId = window.turnstile.render(
+                '#contactPageTurnstile', {
+                    sitekey: @json(config('services.turnstile.site_key')),
+                    action: 'contact',
+                    theme: 'auto',
 
-    if (!$(this).parsley().isValid()) return;
+                    callback: function() {
+                        document.getElementById(
+                            'contactPageVerificationMessage'
+                        ).textContent = '';
+                    },
 
-    const $btn = $('#submitBtn');
-    const $spinner = $btn.find('.spinner-border');
-    const $text = $btn.find('.btn-text');
+                    'expired-callback': function() {
+                        document.getElementById(
+                                'contactPageVerificationMessage'
+                            ).textContent =
+                            'Security verification expired. Please verify again.';
+                    },
 
-    // Show spinner, hide text, and disable button
-    $btn.prop('disabled', true);
-    $spinner.removeClass('d-none');
-    $text.addClass('d-none');
+                    'error-callback': function(code) {
+                        document.getElementById(
+                                'contactPageVerificationMessage'
+                            ).textContent =
+                            'Security verification could not complete. Please refresh and try again.';
 
-    $.ajax({
-        url: "{{ route('contact.submit') }}",
-        method: "POST",
-        data: $(this).serialize(),
-        success: function (response) {
-            Swal.fire('Success!', response.message, 'success');
-            $('#contactForm')[0].reset();
-            $('#reload').click();
-        },
-        error: function (xhr) {
-            if (xhr.status === 422) {
-                const errors = xhr.responseJSON.errors;
-                let message = '';
+                        console.error('Contact Turnstile error:', code);
+                    }
+                }
+            );
+        };
 
-                for (let field in errors) {
-                    message += `${errors[field].join('<br>')}<br>`;
+        $(function() {
+            const $form = $('#contactPageForm');
+            const parsley = $form.parsley();
+            const $button = $form.find('[data-contact-submit]');
+            const $spinner = $button.find('.spinner-border');
+            const $text = $button.find('.btn-text');
+
+            let submitting = false;
+
+            function setLoading(loading) {
+                submitting = loading;
+
+                $button.prop('disabled', loading);
+                $spinner.toggleClass('d-none', !loading);
+                $text.toggleClass('d-none', loading);
+                $form.attr('aria-busy', loading ? 'true' : 'false');
+            }
+
+            $form.on('submit', function(event) {
+                event.preventDefault();
+
+                if (submitting || !parsley.validate()) return;
+
+                const token = $form
+                    .find('[name="cf-turnstile-response"]')
+                    .val();
+
+                if (!token) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Security Verification',
+                        text: 'Please complete the security verification.'
+                    });
+
+                    return;
                 }
 
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Validation Error',
-                    html: message
-                });
-                 $('#reload').click();
-            } else {
-                Swal.fire('Error', 'Something went wrong.', 'error');
-                 $('#reload').click();
-            }
-        },
-        complete: function () {
-            $btn.prop('disabled', false);
-            $spinner.addClass('d-none');
-            $text.removeClass('d-none');
-        }
-    });
-});
+                setLoading(true);
 
+                $.ajax({
+                    url: $form.attr('action'),
+                    method: 'POST',
+                    data: $form.serialize(),
+                    dataType: 'json',
+
+                    headers: {
+                        Accept: 'application/json'
+                    },
+
+                    success: function(response) {
+                        $form[0].reset();
+                        parsley.reset();
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Message Sent!',
+                            text: response.message ||
+                                'Thank you for contacting us!'
+                        });
+                    },
+
+                    error: function(xhr) {
+                        const response = xhr.responseJSON || {};
+
+                        let title = 'Unable to Send';
+                        let message =
+                            'Unable to send your message. Please try again.';
+
+                        if (xhr.status === 422) {
+                            title = 'Please Check Your Details';
+
+                            const messages = Object.values(
+                                response.errors || {}
+                            ).flat();
+
+                            message = messages.length ?
+                                messages.join('\n') :
+                                'Please check the form and try again.';
+                        } else if (xhr.status === 429) {
+                            title = 'Too Many Attempts';
+                            message =
+                                'Please wait a minute before trying again.';
+                        } else if (xhr.status === 419) {
+                            title = 'Session Expired';
+                            message =
+                                'Please refresh this page and submit again.';
+                        } else if (xhr.status === 0) {
+                            title = 'Connection Error';
+                            message =
+                                'Please check your internet connection.';
+                        } else if (xhr.status === 503) {
+                            message = response.message ||
+                                'The service is temporarily unavailable. Please try again later.';
+                        }
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: title,
+                            text: message
+                        });
+                    },
+
+                    complete: function() {
+                        if (
+                            window.turnstile &&
+                            window.contactPageWidgetId !== null
+                        ) {
+                            window.turnstile.reset(
+                                window.contactPageWidgetId
+                            );
+                        }
+
+                        setLoading(false);
+                    }
+                });
+            });
+        });
     </script>
+
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=initContactPageTurnstile&render=explicit"
+        async defer></script>
 @endpush
 
 @push('styles')
     <style>
-        .parsley-required {
-            color: red;
-            font-weight: 400;
-            list-style-type: none;
+        #contactPageForm .parsley-errors-list {
+            margin: 6px 0 0;
+            padding: 0;
+            color: #dc3545;
+            font-size: 14px;
+            list-style: none;
+        }
+
+        #contactPageForm .parsley-error {
+            border-color: #dc3545;
+        }
+
+        #contactPageForm [data-contact-submit]:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .swal2-html-container {
+            white-space: pre-line;
         }
     </style>
 @endpush
